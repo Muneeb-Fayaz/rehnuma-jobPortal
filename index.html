@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rehnuma - Job Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    header {
+      background: rgba(255,255,255,0.95);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .logo { font-size: 48px; margin-bottom: 10px; }
+
+    h1 {
+      font-size: 36px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .subtitle { color: #666; font-size: 16px; margin-bottom: 20px; }
+    .subtitle a { color: #667eea; text-decoration: none; }
+    .subtitle a:hover { text-decoration: underline; }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 20px;
+    }
+
+    .stat-item { text-align: center; }
+    .stat-number { font-size: 28px; font-weight: 700; color: #667eea; }
+    .stat-label { font-size: 14px; color: #888; }
+
+    .search-bar {
+      background: rgba(255,255,255,0.95);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-input, .filter-select {
+      padding: 14px 18px;
+      border: 2px solid #e8e8e8;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .search-input { flex: 1; min-width: 200px; }
+    .search-input:focus, .filter-select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102,126,234,0.1);
+    }
+
+    .filter-select { background: white; cursor: pointer; }
+
+    .search-btn {
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .search-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
+
+    .results-info {
+      background: rgba(255,255,255,0.9);
+      padding: 12px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .results-count { font-weight: 600; color: #333; }
+    .sort-select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+
+    .job-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    .job-card {
+      background: rgba(255,255,255,0.98);
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .job-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    .job-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+
+    .job-card.featured::before {
+      background: linear-gradient(135deg, #f6d365, #fda085);
+      height: 4px;
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: linear-gradient(135deg, #f6d365, #fda085);
+      color: #333;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .job-header { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+
+    .company-info { display: flex; align-items: center; gap: 12px; }
+
+    .company-logo {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .company-name { font-size: 18px; font-weight: 700; color: #333; }
+    .company-rating { color: #f6d365; font-size: 14px; }
+
+    .job-type {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .job-type.full-time { background: #e3f2fd; color: #1976d2; }
+    .job-type.part-time { background: #f3e5f5; color: #7b1fa2; }
+    .job-type.contract { background: #fff3e0; color: #f57c00; }
+    .job-type.internship { background: #e8f5e9; color: #388e3c; }
+    .job-type.remote { background: #e0f7fa; color: #00838f; }
+
+    .job-title { font-size: 20px; color: #333; font-weight: 600; }
+
+    .job-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .detail-item { display: flex; align-items: center; gap: 6px; }
+
+    .salary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .job-description { color: #555; font-size: 14px; line-height: 1.7; }
+
+    .job-requirements { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .requirement-tag {
+      padding: 6px 14px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #555;
+      transition: all 0.2s;
+    }
+
+    .requirement-tag:hover { background: #667eea; color: white; }
+
+    .job-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid #eee;
+    }
+
+    .posted-date { font-size: 13px; color: #999; }
+
+    .action-buttons { display: flex; gap: 10px; }
+
+    .save-btn {
+      padding: 12px;
+      background: #f5f5f5;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 18px;
+    }
+
+    .save-btn:hover { background: #ffe0e0; }
+    .save-btn.saved { background: #ffe0e0; color: #e53935; }
+
+    .apply-btn {
+      background: linear-gradient(135deg, #EA4335, #C5221F);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(234,67,53,0.3);
+    }
+
+    .apply-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(234,67,53,0.5);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal-content {
+      background: white;
+      padding: 36px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 520px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+      animation: slideUp 0.3s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .modal-title { font-size: 24px; font-weight: 700; color: #333; }
+
+    .close-btn {
+      background: #f5f5f5;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      transition: all 0.2s;
+    }
+
+    .close-btn:hover { background: #e0e0e0; }
+
+    .form-group { margin-bottom: 20px; }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid #e8e8e8;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .form-textarea { resize: vertical; min-height: 100px; }
+
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102,126,234,0.1);
+    }
+
+    .form-row { display: flex; gap: 16px; }
+    .form-row .form-group { flex: 1; }
+
+    .input-with-icon {
+      position: relative;
+    }
+
+    .input-with-icon .icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: #888;
+    }
+
+    .input-with-icon .form-input {
+      padding-left: 44px;
+    }
+
+    .file-upload {
+      border: 2px dashed #e8e8e8;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #fafafa;
+    }
+
+    .file-upload:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+
+    .file-upload.has-file {
+      border-color: #25D366;
+      background: #e8f5e9;
+    }
+
+    .file-upload-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .file-upload-text {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .file-upload-hint {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    .file-name {
+      font-size: 14px;
+      color: #25D366;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .resume-note {
+      background: #fff3e0;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      color: #e65100;
+      margin-top: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .resume-note-icon {
+      font-size: 16px;
+    }
+
+    .modal-actions { display: flex; gap: 12px; margin-top: 28px; }
+
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #EA4335, #C5221F);
+      color: white;
+      box-shadow: 0 4px 15px rgba(234,67,53,0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(234,67,53,0.5);
+    }
+
+    .btn-secondary { background: #f5f5f5; color: #666; }
+    .btn-secondary:hover { background: #e0e0e0; }
+
+    .hidden { display: none !important; }
+
+    .empty-state {
+      background: rgba(255,255,255,0.95);
+      padding: 80px 20px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .empty-icon { font-size: 64px; margin-bottom: 20px; }
+    .empty-state h3 { font-size: 24px; color: #333; margin-bottom: 10px; }
+    .empty-state p { color: #666; font-size: 16px; }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #333;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      animation: slideIn 0.3s ease;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 30px;
+    }
+
+    .page-btn {
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.9);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .page-btn:hover, .page-btn.active {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+
+    footer {
+      background: rgba(255,255,255,0.95);
+      padding: 30px;
+      border-radius: 16px;
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .footer-links { display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; }
+    .footer-links a { color: #667eea; text-decoration: none; font-weight: 500; }
+    .footer-links a:hover { text-decoration: underline; }
+    .copyright { color: #888; font-size: 14px; }
+
+    @media (max-width: 768px) {
+      .job-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 28px; }
+      .search-bar { flex-direction: column; }
+      .stats { gap: 20px; }
+      .form-row { flex-direction: column; gap: 0; }
+      .footer-links { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">🎯</div>
+      <h1>RehNuma</h1>
+      <p class="subtitle">Find your dream job and apply instantly via Email</p>
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-number" id="jobCount">0</div>
+          <div class="stat-label">Active Jobs</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">500+</div>
+          <div class="stat-label">Companies</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">10K+</div>
+          <div class="stat-label">Candidates</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="search-bar">
+      <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search jobs, companies, skills..." />
+      <select class="filter-select" id="locationFilter">
+        <option value="">📍 All Locations</option>
+        <option value="Remote">Remote</option>
+        <option value="Mumbai">Mumbai</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Bangalore">Bangalore</option>
+        <option value="Hyderabad">Hyderabad</option>
+        <option value="Pune">Pune</option>
+        <option value="Chennai">Chennai</option>
+        <option value="kashmir">Kashmir</option>
+      </select>
+      <select class="filter-select" id="typeFilter">
+        <option value="">💼 All Types</option>
+        <option value="Full-time">Full-time</option>
+        <option value="Part-time">Part-time</option>
+        <option value="Contract">Contract</option>
+        <option value="Internship">Internship</option>
+        <option value="Remote">Remote</option>
+      </select>
+      <select class="filter-select" id="salaryFilter">
+        <option value="">💰 Salary Range</option>
+        <option value="0-5">₹0 - ₹5 LPA</option>
+        <option value="5-10">₹5 - ₹10 LPA</option>
+        <option value="10-20">₹10 - ₹20 LPA</option>
+        <option value="20+">₹20+ LPA</option>
+      </select>
+      <button class="search-btn" onclick="filterJobs()">Search</button>
+    </div>
+
+    <div class="results-info">
+      <span class="results-count" id="resultsCount">Loading jobs...</span>
+      <select class="sort-select" id="sortSelect" onchange="filterJobs()">
+        <option value="newest">Newest First</option>
+        <option value="salary-high">Salary: High to Low</option>
+        <option value="salary-low">Salary: Low to High</option>
+      </select>
+    </div>
+
+    <div class="job-grid" id="jobGrid"></div>
+
+    <div class="pagination" id="pagination"></div>
+
+    <footer>
+      <div class="footer-links">
+        <a href="#">About Us</a>
+        <a href="#">Contact</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+      <p class="copyright">© 2024 CareerBoard. All rights reserved.</p>
+      <br>
+      <p>Designed and Created by Muneeb Fayaz</p>
+    </footer>
+  </div>
+
+  <div class="modal hidden" id="applyModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Apply for <span id="modalJobTitle"></span></h2>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <form id="applyForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" class="form-input" id="fullName" required placeholder="John Doe" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone *</label>
+            <input type="tel" class="form-input" id="phone" required placeholder="+91 9876543210" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email *</label>
+          <input type="email" class="form-input" id="email" required placeholder="john@example.com" />
+        </div>
+        
+        <!-- LinkedIn Profile -->
+        <div class="form-group">
+          <label class="form-label">LinkedIn Profile</label>
+          <div class="input-with-icon">
+            <span class="icon">💼</span>
+            <input type="url" class="form-input" id="linkedin" placeholder="https://linkedin.com/in/yourprofile" />
+          </div>
+        </div>
+        
+        <!-- GitHub Profile -->
+        <div class="form-group">
+          <label class="form-label">GitHub Profile</label>
+          <div class="input-with-icon">
+            <span class="icon">🐙</span>
+            <input type="url" class="form-input" id="github" placeholder="https://github.com/yourusername" />
+          </div>
+        </div>
+        
+        <!-- Resume Upload -->
+        <div class="form-group">
+          <label class="form-label">Resume / CV</label>
+          <div class="file-upload" id="resumeUpload" onclick="document.getElementById('resumeFile').click()">
+            <div class="file-upload-icon">📄</div>
+            <div class="file-upload-text">Click to upload your resume</div>
+            <div class="file-upload-hint">PDF, DOC, DOCX (Max 5MB)</div>
+            <div class="file-name hidden" id="fileName"></div>
+          </div>
+          <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" style="display: none;" onchange="handleFileSelect(this)" />
+          <div class="resume-note">
+            <span class="resume-note-icon">💡</span>
+            <span>After clicking "Apply via Email", you can attach your resume directly in your email client.</span>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Location *</label>
+            <input type="text" class="form-input" id="location" required placeholder="Mumbai, India" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Experience *</label>
+            <input type="text" class="form-input" id="experience" required placeholder="3 years" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current/Expected CTC</label>
+          <input type="text" class="form-input" id="ctc" placeholder="₹8 LPA / ₹12 LPA" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Why are you interested?</label>
+          <textarea class="form-textarea" id="interest" placeholder="Share why you're excited about this role..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Key Skills & Qualifications</label>
+          <textarea class="form-textarea" id="skills" placeholder="Highlight your relevant skills and experience..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">✉️ Apply via Email</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const jobs = [
+      {
+        id: 1,
+        company: "TechCorp India",
+        logo: "TC",
+        rating: "4.5",
+        title: "Senior Frontend Developer",
+        type: "Full-time",
+        location: "Bangalore",
+        salary: "₹18-25 LPA",
+        salaryNum: 21,
+        description: "Join our dynamic team to build cutting-edge web applications using React, TypeScript, and modern technologies.",
+        requirements: ["React", "TypeScript", "Node.js", "AWS", "5+ years"],
+        posted: "2 days ago",
+        featured: true,
+        email: "muneebfayaz1326@gmail.com"
+      },
+      {
+        id: 2,
+        company: "StartupXYZ",
+        logo: "SX",
+        rating: "4.2",
+        title: "Product Manager",
+        type: "Full-time",
+        location: "Mumbai",
+        salary: "₹20-30 LPA",
+        salaryNum: 25,
+        description: "Lead product strategy and roadmap for our flagship B2B SaaS platform. Work with cross-functional teams.",
+        requirements: ["Product Strategy", "Agile", "B2B SaaS", "Analytics", "4+ years"],
+        posted: "1 day ago",
+        featured: true,
+        email: "muneebfayaz1326@gmail.com"
+      },
+      {
+        id: 3,
+        company: "FinanceHub",
+        logo: "FH",
+        rating: "4.0",
+        title: "Data Analyst",
+        type: "Remote",
+        location: "Remote",
+        salary: "₹8-12 LPA",
+        salaryNum: 10,
+        description: "Analyze financial data and create insightful reports to drive business decisions. SQL and Python expertise required.",
+        requirements: ["SQL", "Python", "Tableau", "Excel", "2+ years"],
+        posted: "3 days ago",
+        featured: false,
+        email: "muneebfayaz1326@gmail.com"
+      },
+      {
+        id: 4,
+        company: "DesignStudio",
+        logo: "DS",
+        rating: "4.7",
+        title: "UI/UX Designer",
+        type: "Part-time",
+        location: "Delhi",
+        salary: "₹6-10 LPA",
+        salaryNum: 8,
+        description: "Create beautiful and intuitive user interfaces for mobile and web applications. Figma expertise essential.",
+        requirements: ["Figma", "Adobe XD", "Prototyping", "User Research", "3+ years"],
+        posted: "5 days ago",
+        featured: false,
+        email: "muneebfayaz1326@gmail.com"
+      },
+      {
+        id: 5,
+        company: "CloudNet Solutions",
+        logo: "CN",
+        rating: "4.3",
+        title: "DevOps Engineer",
+        type: "Contract",
+        location: "Hyderabad",
+        salary: "₹15-22 LPA",
+        salaryNum: 18,
+        description: "Manage cloud infrastructure and CI/CD pipelines. Kubernetes and Docker experience mandatory.",
+        requirements: ["Kubernetes", "Docker", "AWS", "Jenkins", "4+ years"],
+        posted: "1 week ago",
+        featured: false,
+        email: "muneebfayaz1326@gmail.com"
+      },
+      {
+        id: 6,
+        company: "EduTech Pro",
+        logo: "ET",
+        rating: "4.1",
+        title: "Content Writer Intern",
+        type: "Internship",
+        location: "Pune",
+        salary: "₹15-25K/month",
+        salaryNum: 3,
+        description: "Create engaging educational content for our e-learning platform. Great opportunity for freshers!",
+        requirements: ["Writing", "SEO", "Research", "English", "Fresher OK"],
+        posted: "4 days ago",
+        featured: false,
+        email: "muneebfayaz1326@gmail.com"
+      },
+      {
+        id: 7,
+        company: "HealthTech",
+        logo: "HT",
+        rating: "4.6",
+        title: "Backend Developer",
+        type: "Full-time",
+        location: "Chennai",
+        salary: "₹12-18 LPA",
+        salaryNum: 15,
+        description: "Build scalable APIs and microservices for our healthcare platform using Node.js and MongoDB.",
+        requirements: ["Node.js", "MongoDB", "REST APIs", "Microservices", "3+ years"],
+        posted: "6 days ago",
+        featured: false,
+        email: "muneebfayaz1326@gmail.com"
+      },
+      {
+        id: 8,
+        company: "GameZone Studios",
+        logo: "GZ",
+        rating: "4.8",
+        title: "Unity Game Developer",
+        type: "Full-time",
+        location: "Bangalore",
+        salary: "₹10-16 LPA",
+        salaryNum: 13,
+        description: "Develop exciting mobile games using Unity. Passion for gaming is a must!",
+        requirements: ["Unity", "C#", "Mobile Games", "3D Modeling", "2+ years"],
+        posted: "1 week ago",
+        featured: false,
+        email: "muneebfayaz1326@gmail.com"
+      },
+      {
+        id: 9,
+        company: "Muneeb's Game zone",
+        logo: "GZ",
+        rating: "5.0",
+        title: "Unity Game Developer",
+        type: "Full-time",
+        location: "Bangalore",
+        salary: "₹10-16 LPA",
+        salaryNum: 13,
+        description: "Develop exciting mobile games using Unity. Passion for gaming is a must!",
+        requirements: ["Unity", "C#", "Mobile Games", "3D Modeling", "2+ years"],
+        posted: "1 week ago",
+        featured: false,
+        email: "muneebfayaz1326@gmail.com"
+      }
+    ];
+
+    let savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+    let currentJob = null;
+    let selectedResumeFile = null;
+
+    function handleFileSelect(input) {
+      const file = input.files[0];
+      const uploadDiv = document.getElementById('resumeUpload');
+      const fileNameDiv = document.getElementById('fileName');
+      
+      if (file) {
+        // Check file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+          showToast('File too large! Max 5MB allowed.');
+          input.value = '';
+          return;
+        }
+        
+        selectedResumeFile = file;
+        uploadDiv.classList.add('has-file');
+        fileNameDiv.textContent = '✅ ' + file.name;
+        fileNameDiv.classList.remove('hidden');
+      } else {
+        selectedResumeFile = null;
+        uploadDiv.classList.remove('has-file');
+        fileNameDiv.classList.add('hidden');
+      }
+    }
+
+    function renderJobs(filteredJobs) {
+      const grid = document.getElementById('jobGrid');
+      document.getElementById('jobCount').textContent = filteredJobs.length;
+      document.getElementById('resultsCount').textContent = `Showing ${filteredJobs.length} jobs`;
+
+      if (filteredJobs.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1/-1;">
+            <div class="empty-icon">🔍</div>
+            <h3>No jobs found</h3>
+            <p>Try adjusting your search filters</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filteredJobs.map(job => `
+        <div class="job-card ${job.featured ? 'featured' : ''}">
+          ${job.featured ? '<span class="featured-badge">⭐ Featured</span>' : ''}
+          <div class="job-header">
+            <div class="company-info">
+              <div class="company-logo">${job.logo}</div>
+              <div>
+                <div class="company-name">${job.company}</div>
+                <div class="company-rating">⭐ ${job.rating}</div>
+              </div>
+            </div>
+            <span class="job-type ${job.type.toLowerCase().replace('-', '')}">${job.type}</span>
+          </div>
+          <div class="job-title">${job.title}</div>
+          <div class="job-details">
+            <span class="detail-item">📍 ${job.location}</span>
+            <span class="detail-item salary">${job.salary}</span>
+          </div>
+          <p class="job-description">${job.description}</p>
+          <div class="job-requirements">
+            ${job.requirements.map(req => `<span class="requirement-tag">${req}</span>`).join('')}
+          </div>
+          <div class="job-footer">
+            <span class="posted-date">🕐 ${job.posted}</span>
+            <div class="action-buttons">
+              <button class="save-btn ${savedJobs.includes(job.id) ? 'saved' : ''}" onclick="toggleSave(${job.id})">
+                ${savedJobs.includes(job.id) ? '❤️' : '🤍'}
+              </button>
+              <button class="apply-btn" onclick="openModal(${job.id})">
+                ✉️ Apply Now
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterJobs() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const location = document.getElementById('locationFilter').value;
+      const type = document.getElementById('typeFilter').value;
+      const salary = document.getElementById('salaryFilter').value;
+      const sort = document.getElementById('sortSelect').value;
+
+      let filtered = jobs.filter(job => {
+        const matchSearch = !search || 
+          job.title.toLowerCase().includes(search) || 
+          job.company.toLowerCase().includes(search) ||
+          job.requirements.some(r => r.toLowerCase().includes(search));
+        const matchLocation = !location || job.location === location;
+        const matchType = !type || job.type === type;
+        
+        let matchSalary = true;
+        if (salary) {
+          const [min, max] = salary.split('-').map(s => parseInt(s.replace('+', '')));
+          matchSalary = max ? (job.salaryNum >= min && job.salaryNum <= max) : (job.salaryNum >= min);
+        }
+
+        return matchSearch && matchLocation && matchType && matchSalary;
+      });
+
+      if (sort === 'salary-high') filtered.sort((a, b) => b.salaryNum - a.salaryNum);
+      else if (sort === 'salary-low') filtered.sort((a, b) => a.salaryNum - b.salaryNum);
+      else filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+
+      renderJobs(filtered);
+    }
+
+    function toggleSave(jobId) {
+      if (savedJobs.includes(jobId)) {
+        savedJobs = savedJobs.filter(id => id !== jobId);
+        showToast('Job removed from saved');
+      } else {
+        savedJobs.push(jobId);
+        showToast('Job saved! ❤️');
+      }
+      localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+      filterJobs();
+    }
+
+    function openModal(jobId) {
+      currentJob = jobs.find(j => j.id === jobId);
+      document.getElementById('modalJobTitle').textContent = currentJob.title;
+      document.getElementById('applyModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      
+      // Reset file upload
+      selectedResumeFile = null;
+      document.getElementById('resumeFile').value = '';
+      document.getElementById('resumeUpload').classList.remove('has-file');
+      document.getElementById('fileName').classList.add('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('applyModal').classList.add('hidden');
+      document.body.style.overflow = '';
+      document.getElementById('applyForm').reset();
+      selectedResumeFile = null;
+    }
+
+    document.getElementById('applyForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const data = {
+        name: document.getElementById('fullName').value,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        linkedin: document.getElementById('linkedin').value,
+        github: document.getElementById('github').value,
+        location: document.getElementById('location').value,
+        experience: document.getElementById('experience').value,
+        ctc: document.getElementById('ctc').value,
+        interest: document.getElementById('interest').value,
+        skills: document.getElementById('skills').value
+      };
+
+      // Build email subject
+      const subject = `Job Application: ${currentJob.title} at ${currentJob.company}`;
+
+      // Build email body
+      let body = `Dear Hiring Manager,
+
+I am writing to apply for the ${currentJob.title} position at ${currentJob.company}.
+
+APPLICANT DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Full Name: ${data.name}
+• Phone: ${data.phone}
+• Email: ${data.email}
+• Location: ${data.location}
+• Experience: ${data.experience}`;
+
+      if (data.ctc) {
+        body += `\n• Current/Expected CTC: ${data.ctc}`;
+      }
+
+      // Add LinkedIn if provided
+      if (data.linkedin) {
+        body += `\n\nLINKEDIN PROFILE:\n${data.linkedin}`;
+      }
+
+      // Add GitHub if provided
+      if (data.github) {
+        body += `\n\nGITHUB PROFILE:\n${data.github}`;
+      }
+
+      if (data.interest) {
+        body += `\n\nWHY I'M INTERESTED:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n${data.interest}`;
+      }
+
+      if (data.skills) {
+        body += `\n\nKEY SKILLS & QUALIFICATIONS:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n${data.skills}`;
+      }
+
+      // Add reminder about resume if file was selected
+      if (selectedResumeFile) {
+        body += `\n\n📎 RESUME: Please note that I have attached my resume (${selectedResumeFile.name}) to this email.`;
+      }
+
+      body += `\n\nThank you for considering my application. I look forward to hearing from you.
+
+Best regards,
+${data.name}`;
+
+      // Create mailto link
+      const mailtoLink = `mailto:${currentJob.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailtoLink;
+      
+      closeModal();
+      
+      if (selectedResumeFile) {
+        showToast('Email client opened! Don\'t forget to attach your resume 📎');
+      } else {
+        showToast('Email client opened! Send your application 🎉');
+      }
+    });
+
+    function showToast(message) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span>✓</span> ${message}`;
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.remove(), 4000);
+    }
+
+    document.getElementById('applyModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') filterJobs();
+    });
+
+    filterJobs();
+  </script>
+</body>
+</html>
